@@ -1,0 +1,5 @@
+# Clean pipeline.yaml
+sed -i '/uid:\|resourceVersion:\|creationTimestamp:\|managedFields:\|generation:\|namespace:\|status:\|  conditions:\|  startTime:\|  completionTime:/d' pipeline.yaml
+
+# Clean all-tasks.yaml
+sed -i '/uid:\|resourceVersion:\|creationTimestamp:\|managedFields:\|generation:\|namespace:\|status:\|  conditions:\|  startTime:\|  completionTime:/d' all-tasks.yaml

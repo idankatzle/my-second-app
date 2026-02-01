@@ -1,0 +1,81 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: my-1
+spec:
+  finally:
+  - name: deploy-to-dev
+    params:
+    - name: SCRIPT
+      value: oc patch deployment my-first-konflux-app --patch "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"my-first-konflux-app\",\"image\":\"image-registry.openshift-image-registry.svc:5000/idankatz-dev/katz:$(context.pipelineRun.name)\"}]}}}}"
+    taskRef:
+      kind: Task
+      name: openshift-client
+    workspaces:
+    - name: source
+      workspace: shared-1
+  params:
+  - default: image-registry.openshift-image-registry.svc:5000/idankatz-dev/katz:$(context.pipelineRun.name)
+    name: IMAGE_URL
+    type: string
+  tasks:
+  - name: git-clone-idan
+    params:
+    - name: repo_url
+      value: https://github.com/idankatzle/my-first-konflux-app.git
+    taskRef:
+      kind: Task
+      name: git-clone-local
+    workspaces:
+    - name: source
+      workspace: shared-1
+  - name: buildah
+    params:
+    - name: IMAGE
+      value: image-registry.openshift-image-registry.svc:5000/idankatz-dev/katz:$(context.pipelineRun.name)
+    - name: DOCKERFILE
+      value: ./Dockerfile
+    - name: BUILD_ARGS
+      value:
+      - ""
+    - name: CONTEXT
+      value: .
+    - name: STORAGE_DRIVER
+      value: vfs
+    - name: FORMAT
+      value: oci
+    - name: BUILD_EXTRA_ARGS
+      value: ""
+    - name: PUSH_EXTRA_ARGS
+      value: ""
+    - name: SKIP_PUSH
+      value: "false"
+    - name: TLS_VERIFY
+      value: "true"
+    - name: VERBOSE
+      value: "false"
+    runAfter:
+    - file-list
+    taskRef:
+      params:
+      - name: kind
+        value: task
+      - name: name
+        value: buildah
+      - name: namespace
+        value: openshift-pipelines
+      resolver: cluster
+    workspaces:
+    - name: source
+      workspace: shared-1
+  - name: file-list
+    runAfter:
+    - git-clone-idan
+    taskRef:
+      kind: Task
+      name: hello-task
+    workspaces:
+    - name: task-workspace
+      workspace: shared-1
+  workspaces:
+  - name: shared-1
