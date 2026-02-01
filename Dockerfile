@@ -1,14 +1,17 @@
-FROM registry.access.redhat.com/ubi8/python-39
+# השתמש בגרסה קלה של פייתון
+FROM python:3.9-slim
 
-# Copy application files
-COPY app.sh index.html ./
+# הגדרת תיקיית העבודה בתוך הקונטיינר
+WORKDIR /app
 
-# Set execution permissions
-USER root
-RUN chmod +x app.sh
+# התקנת Flask
+RUN pip install --no-cache-dir flask
 
-# Switch back to non-root user for OpenShift security
-USER 1001
+# העתקת קוד האפליקציה מהמחשב שלך לקונטיינר
+COPY app.py .
 
-# Execute the startup script
-CMD ["./app.sh"]
+# חשיפת הפורט שהאפליקציה מאזינה לו
+EXPOSE 8080
+
+# פקודת ההרצה
+CMD ["python", "app.py"]

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-second-app
+  namespace: idankatz-dev
+  labels:
+    app: my-second-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-second-app
+  template:
+    metadata:
+      labels:
+        app: my-second-app
+    spec:
+      containers:
+      # קונטיינר ראשון (ה-Sidecar) - נשאיר אותו כרגע עם אימג' בסיסי
+      - name: container-name
+        image: image-registry.openshift-image-registry.svc:5000/idankatz-dev/katz:latest
+        imagePullPolicy: IfNotPresent
+      
+      # קונטיינר שני (האפליקציה שלך) - זה השם שה-Pipeline מחפש לעדכן!
+      - name: my-second-app 
+        image: image-registry.openshift-image-registry.svc:5000/idankatz-dev/katz2:latest
+        imagePullPolicy: Always
