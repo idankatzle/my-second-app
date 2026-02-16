@@ -93,6 +93,7 @@ spec:
     - default: "false"
       description: Enable cache proxy configuration
       name: enable-cache-proxy
+      type: string
     - default: []
       description: Array of --build-arg values ("arg=value" strings) for buildah
       name: build-args
@@ -608,5 +609,5 @@ spec:
   workspaces:
   - name: git-auth
     secret:
-      secretName: '{{ git_auth_secret }}'
+      secretName: pipelines-as-code-secret
 status: {}
