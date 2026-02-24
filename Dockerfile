@@ -2,7 +2,7 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# 1111111ת
+# 2221111111ת
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
