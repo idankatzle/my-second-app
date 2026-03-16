@@ -23,7 +23,7 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/idankatzle/my-second-app:{{revision}}
+    value: image-registry.openshift-image-registry.svc:5000/user-ns1/my-second-app:{{revision}}
   - name: dockerfile
     value: Dockerfile
   pipelineSpec:
@@ -603,8 +603,4 @@ spec:
       optional: true
   taskRunTemplate:
     serviceAccountName: build-pipeline-my-second-app-a7690
-  workspaces:
-  - name: git-auth
-    secret:
-      secretName: pipelines-as-code-secret
 status: {}
